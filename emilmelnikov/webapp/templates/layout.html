@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>MHC I Prediction</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="//yui.yahooapis.com/pure/0.6.0/pure-min.css">
+
+        <!--[if lte IE 8]>
+            <link rel="stylesheet" href="//yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+        <![endif]-->
+        <!--[if gt IE 8]><!-->
+            <link rel="stylesheet" href="//yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
+        <!--<![endif]-->
+
+        <link rel="stylesheet" href="/static/stylesheets/main.css">
+
+        <link href="//fonts.googleapis.com/css?family=Lato|Slabo+27px|Fira+Mono" rel="stylesheet">
+    </head>
+
+    <body class="pure-g">
+        <header class="pure-u-1">
+            <!-- <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
+                <a class="pure-menu-heading" href="">MHC I binding prediction</a>
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-selected"><a href="#" class="pure-menu-link">Home</a></li>
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Tour</a></li>
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Sign Up</a></li>
+                </ul>
+            </div> -->
+        </header>
+
+        <main>
+            <div class="pure-u-1-3"></div>
+            <div class="pure-u-1-3">
+                {% block main %}
+                {% endblock %}
+            </div>
+        </main>
+
+        <!-- <footer>
+            <div class="pure-u-1-5"></div>
+            <div class="pure-u-1-5"></div>
+            Developed during <a href="//bioinformaticsinstitute.ru/summer2016">Bioinformatics Summer School 2016</a>
+        </footer> -->
+    </body>
+</html>

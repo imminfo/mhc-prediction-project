@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<table>
+    <thead>
+        <tr>
+            <td>Peptide
+            <td>Prediction
+    <tbody>
+        {% for prediction in predictions %}
+            <tr>
+                <td>
+                    <span class="peptide-sequence">{{ prediction.peptide }}</span>
+                <td>
+                    <span class="peptide-prediction">{{ prediction.prediction }}</span>
+        {% endfor %}
+</table>
+
+<a class="pure-button" href="/">Back</a>
+{% endblock %}

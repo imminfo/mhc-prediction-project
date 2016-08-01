@@ -1,0 +1,150 @@
+import numpy as np
+import xgboost as xgb
+
+
+PROTEIN_ALPHABET = 'ACDEFGHIKLMNPQRSTVWY'
+PROTEIN_PLACEHOLDER = 'Z'
+PROTEIN_LETTERS = PROTEIN_ALPHABET + PROTEIN_PLACEHOLDER
+
+MIN_SEQ_LEN = 8
+MAX_SEQ_LEN = 11
+
+
+MHC_LIST = '''
+HLA-A*01:01
+HLA-A*02:01
+HLA-A*02:02
+HLA-A*02:03
+HLA-A*02:04
+HLA-A*02:05
+HLA-A*02:06
+HLA-A*02:07
+HLA-A*02:10
+HLA-A*02:11
+HLA-A*02:12
+HLA-A*02:16
+HLA-A*02:17
+HLA-A*02:19
+HLA-A*02:50
+HLA-A*03:01
+HLA-A*03:02
+HLA-A*03:19
+HLA-A*11:01
+HLA-A*11:02
+HLA-A*23:01
+HLA-A*24:02
+HLA-A*24:03
+HLA-A*25:01
+HLA-A*26:01
+HLA-A*26:02
+HLA-A*26:03
+HLA-A*29:02
+HLA-A*30:01
+HLA-A*30:02
+HLA-A*31:01
+HLA-A*32:01
+HLA-A*32:07
+HLA-A*32:15
+HLA-A*33:01
+HLA-A*66:01
+HLA-A*68:01
+HLA-A*68:02
+HLA-A*68:23
+HLA-A*69:01
+HLA-A*74:01
+HLA-A*80:01
+HLA-A1
+HLA-A11
+HLA-A2
+HLA-A24
+HLA-A26
+HLA-A3
+HLA-A3/11
+HLA-B*07:02
+HLA-B*08:01
+HLA-B*08:02
+HLA-B*08:03
+HLA-B*14:01
+HLA-B*14:02
+HLA-B*15:01
+HLA-B*15:02
+HLA-B*15:03
+HLA-B*15:09
+HLA-B*15:17
+HLA-B*15:42
+HLA-B*18:01
+HLA-B*27:01
+HLA-B*27:02
+HLA-B*27:03
+HLA-B*27:04
+HLA-B*27:05
+HLA-B*27:06
+HLA-B*27:10
+HLA-B*27:20
+HLA-B*35:01
+HLA-B*35:03
+HLA-B*35:08
+HLA-B*37:01
+HLA-B*38:01
+HLA-B*39:01
+HLA-B*40:01
+HLA-B*40:02
+HLA-B*40:13
+HLA-B*42:01
+HLA-B*42:02
+HLA-B*44:02
+HLA-B*44:03
+HLA-B*45:01
+HLA-B*45:06
+HLA-B*46:01
+HLA-B*48:01
+HLA-B*51:01
+HLA-B*52:01
+HLA-B*53:01
+HLA-B*54:01
+HLA-B*57:01
+HLA-B*57:02
+HLA-B*57:03
+HLA-B*58:01
+HLA-B*58:02
+HLA-B*73:01
+HLA-B*81:01
+HLA-B*83:01
+HLA-B27
+HLA-B44
+HLA-B51
+HLA-B60
+HLA-B7
+HLA-B8
+HLA-C*03:03
+HLA-C*04:01
+HLA-C*05:01
+HLA-C*06:02
+HLA-C*07:01
+HLA-C*07:02
+HLA-C*08:02
+HLA-C*12:03
+HLA-C*14:02
+HLA-C*15:02
+HLA-Cw1
+HLA-Cw4
+HLA-E*01:01
+HLA-E*01:03
+'''.split()
+
+
+def mhcpredict(mhc, peptides):
+    params = {'max_depth': 100, 'eta': 1, 'gamma': 1, 'lambda': 3}
+    bst = xgb.Booster(params)
+    bst.load_model('mhcmodel')
+
+    padded_peptides = [peptide[:MAX_SEQ_LEN].ljust(MIN_SEQ_LEN, PROTEIN_PLACEHOLDER) for peptide in peptides]
+    x = np.zeros(( len(peptides), MAX_SEQ_LEN * len(PROTEIN_LETTERS) + len(MHC_LIST) ))
+
+    for i, peptide in enumerate(padded_peptides):
+        for j, aminoacid in enumerate(peptide):
+            x[i, j * len(PROTEIN_LETTERS) + PROTEIN_LETTERS.index(aminoacid)] = 1.0
+        x[i, MAX_SEQ_LEN * len(PROTEIN_LETTERS) + MHC_LIST.index(mhc)] = 1.0
+
+    y = bst.predict(xgb.DMatrix(x))
+    return list(y)

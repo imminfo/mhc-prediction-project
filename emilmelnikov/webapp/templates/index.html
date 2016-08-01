@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<form class="pure-form" action="/predict" method="post">
+    <fieldset class="pure-group">
+        <select name="mhc">
+            {% for mhc in mhc_list %}
+                <option value={{ mhc }}>{{ mhc }}
+            {% endfor %}
+        </select>
+        <textarea name="peptides" placeholder="Paste peptide strings here"></textarea>
+    </fieldset>
+    <button type="submit" class="pure-button">Predict</button>
+</form>
+{% endblock %}
